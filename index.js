@@ -923,7 +923,8 @@ const animate = () => {
   lightBack.color.lerp(lightBackColor, 0.05);
   rectLight.color.lerp(rectLightColor, 0.05);
 
-  renderer.render(scene, camera);
+  // The rock/cube background is retired — the paper shadow-box theatre is now
+  // the site's 3D experience, so we no longer render the old fixed background.
   requestAnimationFrame(animate);
 };
 

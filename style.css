@@ -21,6 +21,7 @@ a {
 }
 
 .webgl {
+  display: none;            /* retired: the paper shadow-box replaces the rocks */
   position: fixed;
   top: 0;
   left: 0;
