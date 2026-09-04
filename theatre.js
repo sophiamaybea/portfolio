@@ -20,13 +20,19 @@ const LAYERS = [
   { key: "room",       file: "c0936989d_Untitleddesign-7.png", z: -6.0 },  // inner room seen through the doorway
   { key: "wall",       file: "5c06c62ff_Untitleddesign-6.png", z:  0.0 },  // navy constellation back wall
   { key: "chandelier", file: "fb9313f5c_Untitleddesign-5.png", z:  1.2 },  // floating chandelier
-  { key: "floor",      file: "f70acc15c_Untitleddesign-8.png", z:  7.0, isFloor: true }, // angled foreground floor
+  { key: "floor",      file: "f70acc15c_Untitleddesign-8.png", z: 13.0, isFloor: true }, // stage floor, in FRONT of the curtains
   { key: "curtain",    file: "244e67561_Untitleddesign-4.png", z: 12.0 },  // velvet curtain
   { key: "proscenium", file: "db1fa1fa9_Untitleddesign-3.png", z: 16.0 },  // ornate front frame
 ];
 const Z_MEAN = LAYERS.reduce((s, l) => s + l.z, 0) / LAYERS.length; // ~5.0
 
-const FLOOR_TILT = 1.15;     // radians the floor plane is laid back (~66deg)
+const FLOOR_TILT = 1.0;      // radians the stage floor is laid back (~57deg)
+const FLOOR_SCALE = 0.55;    // shrinks the stage so its front edge doesn't over-project
+
+// The dancing performer: a looping video screen standing on the stage, in
+// front of the curtains, watchable through the proscenium. (16:9 source.)
+const VIDEO = { src: "./videos/theatre/dance.mov", z: 13.6, y: -2.1, w: 4.6 };
+
 const FOV = 42;
 const CAM_FAR_Z = 30;        // scroll 0%  — theatre seen from afar
 const CAM_NEAR_Z = 1.2;      // scroll 100% — up against the doorway
@@ -111,11 +117,12 @@ export function initTheatre() {
     mesh.userData.baseZ = L.z;
 
     if (L.isFloor) {
-      // Lay the floor as a receding plane: pivot at the back (top) edge so the
-      // back edge meets the wall base and the front edge swings toward viewer.
+      // Lay the stage floor as a receding plane: pivot at the back (top) edge so
+      // the back edge meets the wall base and the front edge swings toward viewer.
       const g = new THREE.PlaneGeometry(PLANE_W, PLANE_H);
       g.translate(0, -PLANE_H / 2, 0);          // top edge -> origin
       mesh.geometry = g;
+      mesh.scale.setScalar(FLOOR_SCALE);        // smaller stage apron
       mesh.rotation.x = -FLOOR_TILT;            // tilt back into the box
       mesh.position.set(0, -PLANE_H / 2, L.z);  // back edge at wall base
       floorGroup = mesh;
@@ -125,6 +132,9 @@ export function initTheatre() {
     scene.add(mesh);
     meshes[L.key] = mesh;
   });
+
+  // ---- the dancing performer (a looping video screen on the stage) -----
+  addPerformer(scene);
 
   // ---- dust (a handful of slow motes drifting inside the box) -----------
   const dust = makeDust();
@@ -242,6 +252,47 @@ export function initTheatre() {
 }
 
 // ---- helpers -------------------------------------------------------------
+
+// Build the watchable dancing performer: a looping <video> mapped onto a
+// plane standing on the stage, in front of the curtains, with a dark backing
+// frame so it reads as a little screen inside the theatre.
+function addPerformer(scene) {
+  const video = document.createElement("video");
+  video.src = VIDEO.src;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.autoplay = true;
+  video.preload = "auto";
+  video.crossOrigin = "anonymous";
+  video.style.display = "none";
+  document.body.appendChild(video);
+  video.play().catch(() => {}); // muted autoplay; if blocked, first frame still shows
+
+  const tex = new THREE.VideoTexture(video);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+
+  const vw = VIDEO.w;
+  const vh = vw * (1080 / 1920);
+
+  // dark backing frame, slightly larger and just behind the screen
+  const frame = new THREE.Mesh(
+    new THREE.PlaneGeometry(vw + 0.35, vh + 0.35),
+    new THREE.MeshBasicMaterial({ color: 0x160e08, side: THREE.DoubleSide })
+  );
+  frame.position.set(0, VIDEO.y, VIDEO.z - 0.06);
+  scene.add(frame);
+
+  const screen = new THREE.Mesh(
+    new THREE.PlaneGeometry(vw, vh),
+    new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide })
+  );
+  screen.position.set(0, VIDEO.y, VIDEO.z);
+  scene.add(screen);
+}
+
 function easeInOut(x) {
   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
 }
