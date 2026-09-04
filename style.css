@@ -307,7 +307,7 @@ main {
   height: 100vh;
   overflow-x: hidden;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity; /* proximity (not mandatory) so the tall theatre section can be scrolled through freely */
 }
 
 /* ---- Interactive 3D paper theatre --------------------------------------- */

@@ -17,12 +17,12 @@ const PLANE_H = PLANE_W * (IMG_H / IMG_W); // master scene height (~10.45)
 // Z depths (front = closer to camera = larger Z). Back-to-back ordering:
 //   proscenium -> curtain -> floor -> chandelier -> wall -> inner room
 const LAYERS = [
-  { key: "room",       file: "b61ab1e67_Untitleddesign-7.png", z: -6.0 },  // inner room seen through the doorway
-  { key: "wall",       file: "1fa07eeda_Untitleddesign-6.png", z:  0.0 },  // navy constellation back wall
-  { key: "chandelier", file: "f5f6f0265_Untitleddesign-5.png", z:  1.2 },  // floating chandelier
-  { key: "floor",      file: "4698a80fd_Untitleddesign-8.png", z:  7.0, isFloor: true }, // angled foreground floor
-  { key: "curtain",    file: "6984320aa_Untitleddesign-4.png", z: 12.0 },  // velvet curtain
-  { key: "proscenium", file: "95da1f5c3_Untitleddesign-3.png", z: 16.0 },  // ornate front frame
+  { key: "room",       file: "c0936989d_Untitleddesign-7.png", z: -6.0 },  // inner room seen through the doorway
+  { key: "wall",       file: "5c06c62ff_Untitleddesign-6.png", z:  0.0 },  // navy constellation back wall
+  { key: "chandelier", file: "fb9313f5c_Untitleddesign-5.png", z:  1.2 },  // floating chandelier
+  { key: "floor",      file: "f70acc15c_Untitleddesign-8.png", z:  7.0, isFloor: true }, // angled foreground floor
+  { key: "curtain",    file: "244e67561_Untitleddesign-4.png", z: 12.0 },  // velvet curtain
+  { key: "proscenium", file: "db1fa1fa9_Untitleddesign-3.png", z: 16.0 },  // ornate front frame
 ];
 const Z_MEAN = LAYERS.reduce((s, l) => s + l.z, 0) / LAYERS.length; // ~5.0
 
