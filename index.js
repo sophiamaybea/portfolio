@@ -1,5 +1,6 @@
 import * as THREE from "https://esm.sh/three@0.148.0";
 import { makeNoise4D } from "https://esm.sh/open-simplex-noise@2.5.0";
+import { initTheatre } from "./theatre.js";
 
 //VARIABLES
 const sizes = {
@@ -935,3 +936,4 @@ Array(80).fill().forEach(generateStar);
 generateAirPlane();
 projectResize()
 animate();
+initTheatre();

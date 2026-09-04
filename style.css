@@ -310,6 +310,62 @@ main {
   scroll-snap-type: y mandatory;
 }
 
+/* ---- Interactive 3D paper theatre --------------------------------------- */
+#sectionTheatre {
+  height: 260vh;            /* tall so the scroll can fly the camera through */
+  min-height: 0;
+  margin: 0;                /* full-bleed: the theatre IS the interface */
+  padding: 0;
+  scroll-snap-align: none;  /* let the viewer scroll freely through it */
+  background: #06050a;
+  display: block;
+}
+.theatreStage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+.theatreCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  will-change: transform;
+  touch-action: pan-y;      /* let vertical page scroll pass through */
+}
+.theatreDebug {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 5;
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+.theatreDebug:hover { opacity: 1; }
+.theatreToggle {
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: beige;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(216, 195, 165, 0.45);
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+.theatreToggle[aria-pressed="true"] {
+  color: #06050a;
+  background: rgba(216, 195, 165, 0.9);
+  border-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  #sectionTheatre { height: 100vh; }  /* no scroll-travel in reduced motion */
+}
+
 section {
   display: flex;
   flex-direction: column;
